@@ -122,17 +122,18 @@ let touchStartX, touchStartY;
 
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    
-    // Guardar posición inicial para detectar swipe
+
+    // Si no estamos jugando, iniciar juego y salir
+    if (gameState !== "playing") {
+        initGame();
+        gameState = "playing";
+        return;
+    }
+
+    // Solo si ya estamos jugando, guardar posición para swipe
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
-    
-    // Si estamos en pantalla de inicio o game over, un toque simple inicia el juego
-    if (gameState === "start" || gameState === "gameover") {
-        gameState = "playing";
-        initGame();
-    }
-});
+}, { passive: false });
 
 canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
