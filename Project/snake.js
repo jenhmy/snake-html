@@ -19,6 +19,14 @@ let gameState = "start";
 let growthCounter = 0;
 
 // =========================
+// IMÁGENES
+// =========================
+const snakeImage = new Image();
+const gameOverImage = new Image();
+snakeImage.src = "https://github.com/jenhmy/snake-html/blob/main/images/snake.png?raw=true";
+gameOverImage.src = "https://github.com/jenhmy/snake-html/blob/main/images/game_over.png?raw=true";
+
+// =========================
 // RESPONSIVE
 // =========================
 function resizeCanvas() {
@@ -96,46 +104,32 @@ function drawStartScreen() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-    // ASCII art de Snake
-    const title = [
-        "███████╗███╗   ██╗ █████╗ ██╗  ██╗███████╗",
-        "██╔════╝████╗  ██║██╔══██╗██║ ██╔╝██╔════╝",
-        "███████╗██╔██╗ ██║███████║█████╔╝ █████╗  ",
-        "╚════██║██║╚██╗██║██╔══██║██╔═██╗ ██╔══╝  ",
-        "███████║██║ ╚████║██║  ██║██║  ██╗███████╗"
-    ];
+    // Imagen de Snake centrada
+    if (snakeImage.complete) {
+        const imgWidth = canvasSize * 0.95;
+        const imgHeight = (snakeImage.height / snakeImage.width) * imgWidth;
+        const imgX = (canvasSize - imgWidth) / 2;
+        const imgY = (canvasSize - imgHeight) / 2;
+        
+        ctx.drawImage(snakeImage, imgX, imgY, imgWidth, imgHeight);
+    }
 
-    const maxFontSizeASCII = 22;
-    const fontSizeASCII = Math.min(maxFontSizeASCII, Math.floor(canvasSize * 0.07));
-    const lineHeight = fontSizeASCII + 2;
-
-    // Centrar verticalmente
-    const totalHeight = lineHeight * title.length;
-    let startY = (canvasSize / 2) - (totalHeight / 2);
-
-    ctx.fillStyle = "lime";
-    ctx.textAlign = "center";
-    ctx.font = `${fontSizeASCII}px monospace`;
-    title.forEach(line => {
-        ctx.fillText(line, canvasSize / 2, startY);
-        startY += lineHeight;
-    });
-
-    // Controles con más separación
-    const bottomLines = [
-        "Controls: AWSD or Arrows",
-        ">> PRESS SPACE <<"
-    ];
-    const fontSizeText = Math.min(18, Math.floor(canvasSize * 0.045));
-    const interline = fontSizeText * 1.5;
+    // Textos
+    const fontSizeText = Math.min(16, Math.floor(canvasSize * 0.04));
+    const interline = fontSizeText * 2;
+    const margin = fontSizeText * 3; // Margen superior E inferior IGUALES
 
     ctx.fillStyle = "white";
     ctx.font = `${fontSizeText}px 'Press Start 2P'`;
-    let controlsY = canvasSize - 20 - interline * bottomLines.length;
-
-    ctx.fillText(bottomLines[0], canvasSize / 2, controlsY);
-    controlsY += interline + 6; // +6px extra solo entre la primera y segunda línea
-    ctx.fillText(bottomLines[1], canvasSize / 2, controlsY);
+    ctx.textAlign = "center";
+    
+    // PRESS SPACE a 'margin' píxeles del borde INFERIOR
+    const spaceY = canvasSize - margin;
+    // Controls a 'interline' por encima de PRESS SPACE
+    const controlsY = spaceY - interline;
+    
+    ctx.fillText("Controls: AWSD or Arrows", canvasSize / 2, controlsY);
+    ctx.fillText(">> PRESS SPACE <<", canvasSize / 2, spaceY);
 }
 
 // =========================
@@ -145,49 +139,32 @@ function drawGameOverScreen() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-    const gameOverArt = [
-        " ██████╗  █████╗ ███╗   ███╗███████╗",
-        "██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
-        "██║  ███╗███████║██╔████╔██║█████╗  ",
-        "██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ",
-        "╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗",
-        "",
-        " ██████╗ ██╗   ██╗███████╗██████╗ ",
-        "██╔═══██╗██║   ██║██╔════╝██╔══██╗",
-        "██║   ██║██║   ██║█████╗  ██████╔╝",
-        "██║   ██║╚██╗ ██╔╝██╔══╝  ██╔══██╗",
-        "╚██████╔╝ ╚████╔╝ ███████╗██║  ██║"
-    ];
-
-    const maxFontSizeASCII = 22;
-    const fontSizeASCII = Math.min(maxFontSizeASCII, Math.floor(canvasSize * 0.07));
-    const lineHeight = fontSizeASCII + 2;
-    const totalHeight = lineHeight * gameOverArt.length;
-    let startY = (canvasSize / 2) - (totalHeight / 2);
-
-    ctx.fillStyle = "red";
-    ctx.font = `${fontSizeASCII}px monospace`;
-    ctx.textAlign = "center";
-    gameOverArt.forEach(line => {
-        ctx.fillText(line, canvasSize / 2, startY);
-        startY += lineHeight;
-    });
-
-    // Score y mensaje
-    const bottomLines = [
-        `Final score: ${score}`,
-        ">> PRESS SPACE <<"
-    ];
-    const fontSizeText = Math.min(18, Math.floor(canvasSize * 0.045));
-    const interline = fontSizeText * 1.5;
+    // Textos
+    const fontSizeText = Math.min(16, Math.floor(canvasSize * 0.04));
+    const margin = fontSizeText * 3; // EL MISMO margen que en inicio
 
     ctx.fillStyle = "white";
     ctx.font = `${fontSizeText}px 'Press Start 2P'`;
-    let controlsY = canvasSize - 20 - interline * bottomLines.length;
+    ctx.textAlign = "center";
+    
+    // PRESS SPACE a 'margin' píxeles del borde INFERIOR (IGUAL que inicio)
+    const spaceY = canvasSize - margin;
+    
+    // FINAL SCORE a 'margin' píxeles del borde SUPERIOR (EXACTAMENTE IGUAL)
+    const scoreY = margin;
+    
+    ctx.fillText(`Final score: ${score}`, canvasSize / 2, scoreY);
+    ctx.fillText(">> PRESS SPACE <<", canvasSize / 2, spaceY);
 
-    ctx.fillText(bottomLines[0], canvasSize / 2, controlsY);
-    controlsY += interline + 6; // +6px extra solo entre la primera y segunda línea
-    ctx.fillText(bottomLines[1], canvasSize / 2, controlsY);
+    // Imagen de Game Over centrada (se dibuja DESPUÉS de los textos para no taparlos)
+    if (gameOverImage.complete) {
+        const imgWidth = canvasSize * 0.95;
+        const imgHeight = (gameOverImage.height / gameOverImage.width) * imgWidth;
+        const imgX = (canvasSize - imgWidth) / 2;
+        const imgY = (canvasSize - imgHeight) / 2;
+        
+        ctx.drawImage(gameOverImage, imgX, imgY, imgWidth, imgHeight);
+    }
 }
 
 // =========================
@@ -209,13 +186,15 @@ function drawGame() {
 
     moveSnake();
 
-    // Score
+    // Score con padding
     ctx.fillStyle = "white";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    const scoreFont = Math.min(18, Math.floor(canvasSize * 0.045));
+    const scoreFont = Math.min(14, Math.floor(canvasSize * 0.035));
     ctx.font = `${scoreFont}px 'Press Start 2P'`;
-    ctx.fillText(`SCORE: ${score}`, box / 2, box / 2);
+    
+    const scorePadding = scoreFont / 2;
+    ctx.fillText(`SCORE: ${score}`, scorePadding, scorePadding);
 }
 
 // =========================
