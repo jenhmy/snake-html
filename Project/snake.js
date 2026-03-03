@@ -7,15 +7,14 @@ const ctx = canvas.getContext("2d");
 // =========================
 // CONFIGURACIÓN DEL JUEGO
 // =========================
-let gridSize = 30;       // Número de celdas por lado
-let box;                 // Tamaño de cada celda (calculado)
-let canvasSize;          
-
-let snake;
+let gridSize = 30;       // 30x30
+let box;                 // Tamaño de cada celda en pixeles
+let canvasSize;          // Será un array de objetos que representan las posiciones
+let snake;              
 let direction;
 let food;
 let score;
-let gameState = "start";
+let gameState = "start";    //Estado del juego
 let growthCounter = 0;
 
 // =========================
@@ -27,20 +26,39 @@ snakeImage.src = "https://github.com/jenhmy/snake-html/blob/main/images/snake.pn
 gameOverImage.src = "https://github.com/jenhmy/snake-html/blob/main/images/game_over.png?raw=true";
 
 // =========================
-// RESPONSIVE
+// CONTROL DE CARGA DE IMÁGENES
+// =========================
+let imagesLoaded = 0;
+
+function checkImagesLoaded() {
+    imagesLoaded++;
+    if (imagesLoaded === 2) { // Cuando las dos imágenes hayan cargado
+        resizeCanvas(); // Recalcula y redibuja
+    }
+}
+
+snakeImage.onload = checkImagesLoaded;
+gameOverImage.onload = checkImagesLoaded;
+
+// Si ya están en caché, forzamos la comprobación
+if (snakeImage.complete) checkImagesLoaded();
+if (gameOverImage.complete) checkImagesLoaded();
+
+// =========================
+// CANVAS RESPONSIVE
 // =========================
 function resizeCanvas() {
-    let size = Math.min(window.innerWidth, window.innerHeight) * 0.9;
-    size = Math.min(size, 600); // máximo 600px
+    let size = Math.min(window.innerWidth, window.innerHeight) * 0.9; // Coge el lado más pequeño de la ventana para aplicar el 90% dejando margen
+    size = Math.min(size, 500); // Limita el tamaño max a 500
     canvasSize = size;
 
     canvas.width = canvasSize;
     canvas.height = canvasSize;
 
-    box = canvasSize / gridSize;
+    box = canvasSize / gridSize; // Calcula el tamaño de cada celda
 }
 
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener("resize", resizeCanvas); // Cada vez que el usuario cambia el tamaño de la ventana llama a resize()
 resizeCanvas();
 
 // =========================
@@ -64,18 +82,18 @@ function initGame() {
 function generateFood() {
     let newFood;
     do {
-        newFood = {
+        newFood = { // Crea food con coordenadas aleatorias
             x: Math.floor(Math.random() * gridSize),
             y: Math.floor(Math.random() * gridSize)
         };
-    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y)); // Si choca contra la serpiente se crea otra posición
     return newFood;
 }
 
 // =========================
 // CONTROL TECLAS
 // =========================
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", (event) => { //cada vez que se presiona una tecla, se ejecuta la función
     if (gameState === "start" && event.code === "Space") {
         gameState = "playing";
         initGame();
@@ -104,31 +122,23 @@ function drawStartScreen() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-    // Imagen de Snake centrada
-    if (snakeImage.complete) {
-        const imgWidth = canvasSize * 0.95;
-        const imgHeight = (snakeImage.height / snakeImage.width) * imgWidth;
-        const imgX = (canvasSize - imgWidth) / 2;
-        const imgY = (canvasSize - imgHeight) / 2;
-        
-        ctx.drawImage(snakeImage, imgX, imgY, imgWidth, imgHeight);
+    if (snakeImage.complete) { // Comprueba que la imagen funcione
+        ctx.drawImage(snakeImage, 0, 0, canvasSize, canvasSize); // Inserta la imagen ocupando todo el canvas
     }
 
-    // Textos
+    // Se utilizan variables y cálculos para que sea compatible con todo tipo de pantalla
     const fontSizeText = Math.min(16, Math.floor(canvasSize * 0.04));
     const interline = fontSizeText * 2;
-    const margin = fontSizeText * 3; // Margen superior E inferior IGUALES
+    const margin = fontSizeText * 4;
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "white"; // Texto
     ctx.font = `${fontSizeText}px 'Press Start 2P'`;
     ctx.textAlign = "center";
     
-    // PRESS SPACE a 'margin' píxeles del borde INFERIOR
-    const spaceY = canvasSize - margin;
-    // Controls a 'interline' por encima de PRESS SPACE
-    const controlsY = spaceY - interline;
+    const spaceY = canvasSize - margin; // Posición de Press space: altura total del canvas menos el margen 
+    const controlsY = spaceY - interline; // Línea de controles justo encima de Press space
     
-    ctx.fillText("Controls: AWSD or Arrows", canvasSize / 2, controlsY);
+    ctx.fillText("Controls: AWSD or Arrows", canvasSize / 2, controlsY); // Divide entre 2 para centrar el texto
     ctx.fillText(">> PRESS SPACE <<", canvasSize / 2, spaceY);
 }
 
@@ -139,61 +149,53 @@ function drawGameOverScreen() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-    // Textos
+    if (gameOverImage.complete) {
+        ctx.drawImage(gameOverImage, 0, 0, canvasSize, canvasSize);
+    }
+
     const fontSizeText = Math.min(16, Math.floor(canvasSize * 0.04));
-    const margin = fontSizeText * 3; // EL MISMO margen que en inicio
+    const margin = fontSizeText * 4;
 
     ctx.fillStyle = "white";
     ctx.font = `${fontSizeText}px 'Press Start 2P'`;
     ctx.textAlign = "center";
     
-    // PRESS SPACE a 'margin' píxeles del borde INFERIOR (IGUAL que inicio)
     const spaceY = canvasSize - margin;
+    const scoreY = margin; // margen desde el borde
     
-    // FINAL SCORE a 'margin' píxeles del borde SUPERIOR (EXACTAMENTE IGUAL)
-    const scoreY = margin;
-    
-    ctx.fillText(`Final score: ${score}`, canvasSize / 2, scoreY);
+    ctx.fillText(`FINAL SCORE: ${score}`, canvasSize / 2, scoreY);
     ctx.fillText(">> PRESS SPACE <<", canvasSize / 2, spaceY);
-
-    // Imagen de Game Over centrada (se dibuja DESPUÉS de los textos para no taparlos)
-    if (gameOverImage.complete) {
-        const imgWidth = canvasSize * 0.95;
-        const imgHeight = (gameOverImage.height / gameOverImage.width) * imgWidth;
-        const imgX = (canvasSize - imgWidth) / 2;
-        const imgY = (canvasSize - imgHeight) / 2;
-        
-        ctx.drawImage(gameOverImage, imgX, imgY, imgWidth, imgHeight);
-    }
 }
 
 // =========================
 // DIBUJAR JUEGO
 // =========================
 function drawGame() {
-    ctx.fillStyle = "black";
+    moveSnake(); // Actualiza la posición de la serpiente 
+    
+    if (gameState !== "playing") return; // Si el juego termina, no dibuja nada
+
+    ctx.fillStyle = "black"; // Fondo negro para limpiar el canvas antes de dibujar la serpiente y la comida
     ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-    // Serpiente
-    snake.forEach((seg, i) => {
-        ctx.fillStyle = i === 0 ? "#00ff88" : "#00cc66";
-        ctx.fillRect(seg.x * box, seg.y * box, box, box);
+    // Dibuja cada segmento de la serpiente
+    snake.forEach((seg, i) => { 
+        ctx.fillStyle = i === 0 ? "#00ff00" : "#00ff00"; // Color cabeza (podría tener el cuerpo de otro color)
+        ctx.fillRect(seg.x * box, seg.y * box, box, box); // Convertimos coordenadas de cuadrícula a píxeles
     });
-
-    // Comida
-    ctx.fillStyle = "red";
+    
+    // Dibuja la comida
+    ctx.fillStyle = "red"; 
     ctx.fillRect(food.x * box, food.y * box, box, box);
 
-    moveSnake();
-
-    // Score con padding
+    // Dibuja el score en la esquina superior izquierda
     ctx.fillStyle = "white";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     const scoreFont = Math.min(14, Math.floor(canvasSize * 0.035));
     ctx.font = `${scoreFont}px 'Press Start 2P'`;
     
-    const scorePadding = scoreFont / 2;
+    const scorePadding = scoreFont / 2; // Pequeño margen desde la esquina de score
     ctx.fillText(`SCORE: ${score}`, scorePadding, scorePadding);
 }
 
@@ -201,37 +203,52 @@ function drawGame() {
 // MOVIMIENTO Y CRECIMIENTO
 // =========================
 function moveSnake() {
+    // Coge la posición actual de la cabeza de la serpiente
     let headX = snake[0].x;
     let headY = snake[0].y;
 
+    // Actualiza la posición de la cabeza según la dirección
     if (direction === "LEFT") headX--;
     if (direction === "RIGHT") headX++;
     if (direction === "UP") headY--;
     if (direction === "DOWN") headY++;
 
-    // Wrap-around
+    // Detecta salida de la cuadrícula y hace “teletransporte” al lado opuesto
     if (headX < 0) headX = gridSize - 1;
     if (headX >= gridSize) headX = 0;
     if (headY < 0) headY = gridSize - 1;
     if (headY >= gridSize) headY = 0;
 
-    const newHead = { x: headX, y: headY };
+    const newHead = { x: headX, y: headY }; // Crea el nuevo objeto de la cabeza con las nuevas coordenadas
 
-    if (snake.some(seg => seg.x === newHead.x && seg.y === newHead.y)) {
+    // Revisa si la serpiente colisiona consigo misma
+    const collides = snake.some((segment, index) => {
+        if (growthCounter > 0 && index === snake.length - 1) { // Ignora el último segmento si la serpiente está creciendo
+            return false;
+        }
+        return segment.x === newHead.x && segment.y === newHead.y; // Devuelve true si alguna parte coincide con la nueva cabeza
+    });
+
+    if (collides) { // Si colisiona, terminamos el juego
         gameState = "gameover";
         return;
     }
 
-    snake.unshift(newHead);
+    snake.unshift(newHead); // Añade la nueva cabeza al principio del array de la serpiente
 
+    // Comprueba si la cabeza llegó a la comida
     if (headX === food.x && headY === food.y) {
         score++;
-        growthCounter += 6;
-        food = generateFood();
+        growthCounter += 6; // Si lo hace crece 6
+        food = generateFood(); // Se genera nueva comida
     }
 
-    if (growthCounter > 0) growthCounter--;
-    else snake.pop();
+    // Crecimiento
+    if (growthCounter > 0) { // Si está creciendo, no eliminamos la cola
+        growthCounter--;
+    } else {
+        snake.pop(); // Si no está creciendo, eliminar el último segmento
+    }
 }
 
 // =========================
