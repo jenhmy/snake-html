@@ -6,7 +6,7 @@ Take control of the snake, collect the red food blocks to grow, and survive whil
 
 Get ready to **collect**, **grow**, and **survive** your way to victory!  
 
-✨ **Snake** is a mini-game developed in **HTML, CSS, and JavaScript**, created to test GitHub Pages deployment and cross-platform input handling.
+✨ **Snake** is the classic mini-game we all know and love, developed in **HTML, CSS, and JavaScript** to test GitHub Pages deployment and cross-platform input handling. And, let’s be honest… I missed the snake from the iconic **Nokia 3310**.
 
 ![Genre](https://img.shields.io/badge/Genre-Arcade-FF4081?style=for-the-badge&logoColor=white&labelColor=F50057)
 ![Mode](https://img.shields.io/badge/Mode-Single%20Player-FF4081?style=for-the-badge&logoColor=white&labelColor=F50057)
