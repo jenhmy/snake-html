@@ -181,7 +181,6 @@ function drawStartScreen() {
 
     // Se utilizan variables y cálculos para que sea compatible con todo tipo de pantalla
     const fontSizeText = Math.min(16, Math.floor(canvasSize * 0.04));
-    const interline = fontSizeText * 2;
     const margin = fontSizeText * 4;
 
     ctx.fillStyle = "white"; // Texto
@@ -189,9 +188,7 @@ function drawStartScreen() {
     ctx.textAlign = "center";
     
     const spaceY = canvasSize - margin; // Posición de Press space: altura total del canvas menos el margen 
-    const controlsY = spaceY - interline; // Línea de controles justo encima de Press space
     
-    ctx.fillText("Controls: AWSD or Arrows", canvasSize / 2, controlsY); // Divide entre 2 para centrar el texto
     ctx.fillText(">> PRESS SPACE <<", canvasSize / 2, spaceY);
 }
 

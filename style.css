@@ -1,5 +1,5 @@
 canvas {
-    touch-action: none; /* Imprescindible para móvil */
+    touch-action: none; /* Para control tactil */
 }
 
 body {
