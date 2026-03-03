@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+    background: black; /*Fondo general de la página*/
+    display: flex; /*Centra el canvas tanto en horizontal como vertical*/
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /*Fallback compatible con todos los navegadores*/
+    min-height: 100dvh; /*Viewport dinámico real (corrige barras en móvil)*/
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden; /*Evita scrolls fantasma*/
+}
+
+canvas {
+    width: 90vmin; /*90% del lado más pequeño del viewport*/
+    height: 90vmin;
+    max-width: 600px; /*Limite máximo para evitar que crezca demasiado*/
+    max-height: 600px;
+    background: transparent;
+    border: 3px solid white;
+}
