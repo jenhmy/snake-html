@@ -1,5 +1,5 @@
 <h1>
-  Snake <html>
+  🐍 Snake &lt;html&gt;
 </h1>
 
 Take control of the snake, collect the red food blocks to grow, and survive while avoiding colliding with yourself. The game adapts to both PC (keyboard) and Android mobile (touch/swipe) controls, allowing you to play seamlessly on either device.
@@ -18,7 +18,7 @@ Get ready to **collect**, **grow**, and **survive** your way to victory!
 
 - **Keyboard (PC)**: Arrow keys or WASD to move the snake.
 - **Touch (Mobile)**: Swipe in the direction you want the snake to go.
-- **Goal**: Eat the red blocks to grow longer.
+- **Goal**: Eat the 🟥 red blocks to grow longer.
 - **Survive**: Avoid hitting yourself; colliding ends the game.
 - **Score**: Each food block increases your score by 1.
 
