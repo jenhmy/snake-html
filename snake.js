@@ -118,37 +118,37 @@ document.addEventListener("keydown", (event) => { //cada vez que se presiona una
 // =========================
 // CONTROL TÁCTIL (MÓVIL)
 // =========================
-let touchStartX, touchStartY;
+let touchStartX, touchStartY; //Se guarda la posición inicial de todo
 
-canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
+canvas.addEventListener('touchstart', (e) => { //Cuando el usuario toca la pantalla...
+    e.preventDefault(); //Evita que el navegador haga scroll o zoom
 
-    // Si no estamos jugando, iniciar juego y salir
+    // SI el juego NO está en modo "playing" (Start/GameOver) y aprietas
     if (gameState !== "playing") {
-        initGame();
-        gameState = "playing";
+        initGame(); // Se reinicia el juego
+        gameState = "playing"; // Cambia el juego a jugando
         return;
     }
 
-    // Solo si ya estamos jugando, guardar posición para swipe
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-}, { passive: false });
+    // Solo si ya estamos jugando, guardaa posición para deslizamento del dedo (swipe)
+    touchStartX = e.touches[0].clientX; // Primer dedo que toca la pantalla
+    touchStartY = e.touches[0].clientY; // Dedo en la pantalla (deslizamiento)
+}, { passive: false }); //Se añade para dejar claro que preventDefault sigue existiendo
 
-canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
+canvas.addEventListener('touchend', (e) => { // Cuando levantas el dedo de la pantalla...
+    e.preventDefault(); //Evita que el navegador haga scroll o zoom
     
     // Solo procesar swipe si estamos jugando
-    if (gameState !== "playing" || !touchStartX) return;
+    if (gameState !== "playing" || !touchStartX) return; // Comprueba si el juego está activo  y si se registró toque inicial
 
-    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndX = e.changedTouches[0].clientX; //Obtiene posición del dedo al levantarlo
     const touchEndY = e.changedTouches[0].clientY;
     
-    const diffX = touchEndX - touchStartX;
+    const diffX = touchEndX - touchStartX; // Calcula la distancia que se movió y en qué dirección
     const diffY = touchEndY - touchStartY;
     
-    // Detectar swipe (deslizamiento)
-    if (Math.abs(diffX) > 30 || Math.abs(diffY) > 30) { // Mínimo 30px para evitar toques accidentales
+    // Detectar swipe (deslizamiento) y decidir movimiento
+    if (Math.abs(diffX) > 20 || Math.abs(diffY) > 20) { // Mínimo 20px para evitar toques accidentales
         if (Math.abs(diffX) > Math.abs(diffY)) {
             // Movimiento horizontal
             if (diffX > 0 && direction !== "LEFT") direction = "RIGHT";
@@ -160,7 +160,7 @@ canvas.addEventListener('touchend', (e) => {
         }
     }
     
-    touchStartX = null;
+    touchStartX = null; // Reinicia touchStartX para que el siguiente swipe se calcule desde un nuevo toque.
 });
 
 // También funciona con toques simples mientras se juega
