@@ -22,8 +22,8 @@ let growthCounter = 0;
 // =========================
 const snakeImage = new Image();
 const gameOverImage = new Image();
-snakeImage.src = "https://github.com/jenhmy/snake-html/blob/main/images/snake.png?raw=true";
-gameOverImage.src = "https://github.com/jenhmy/snake-html/blob/main/images/game_over.png?raw=true";
+snakeImage.src = "images/snake.png";
+gameOverImage.src = "images/game_over.png";
 
 // =========================
 // CONTROL DE CARGA DE IMÁGENES
