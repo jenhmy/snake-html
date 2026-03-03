@@ -36,9 +36,3 @@ Get ready to **collect**, **grow**, and **survive** your way to victory!
   </a>
   <p><small>💡 Press <kbd>Ctrl</kbd>+<kbd>Click</kbd> (Windows/Linux) or <kbd>Cmd</kbd>+<kbd>Click</kbd> (Mac) to open in a new tab</small></p>
 </div>
-
-
----
-
-## 🌟 Credits & Acknowledgments
-- Classic Snake gameplay mechanics adapted for the web with AI assistance.
