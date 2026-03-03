@@ -1,3 +1,7 @@
+canvas {
+    touch-action: none; /* Imprescindible para móvil */
+}
+
 body {
     margin: 0;
     background: black; /*Fondo general de la página*/
@@ -18,3 +22,4 @@ canvas {
     background: transparent;
     border: 3px solid white;
 }
+

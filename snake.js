@@ -116,6 +116,58 @@ document.addEventListener("keydown", (event) => { //cada vez que se presiona una
 });
 
 // =========================
+// CONTROL TÁCTIL (MÓVIL)
+// =========================
+let touchStartX, touchStartY;
+
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    
+    // Guardar posición inicial para detectar swipe
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    
+    // Si estamos en pantalla de inicio o game over, un toque simple inicia el juego
+    if (gameState === "start" || gameState === "gameover") {
+        gameState = "playing";
+        initGame();
+    }
+});
+
+canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    
+    // Solo procesar swipe si estamos jugando
+    if (gameState !== "playing" || !touchStartX) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    // Detectar swipe (deslizamiento)
+    if (Math.abs(diffX) > 30 || Math.abs(diffY) > 30) { // Mínimo 30px para evitar toques accidentales
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            // Movimiento horizontal
+            if (diffX > 0 && direction !== "LEFT") direction = "RIGHT";
+            else if (diffX < 0 && direction !== "RIGHT") direction = "LEFT";
+        } else {
+            // Movimiento vertical
+            if (diffY > 0 && direction !== "UP") direction = "DOWN";
+            else if (diffY < 0 && direction !== "DOWN") direction = "UP";
+        }
+    }
+    
+    touchStartX = null;
+});
+
+// También funciona con toques simples mientras se juega
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault(); // Evita scroll mientras se juega
+});
+
+// =========================
 // PANTALLA INICIO
 // =========================
 function drawStartScreen() {
