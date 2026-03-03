@@ -163,26 +163,10 @@ canvas.addEventListener('touchend', (e) => { // Cuando levantas el dedo de la pa
     touchStartX = null; // Reinicia touchStartX para que el siguiente swipe se calcule desde un nuevo toque.
 });
 
+// También funciona con toques simples mientras se juega
 canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    if (gameState !== "playing") return;
-
-    const touchX = e.touches[0].clientX;
-    const touchY = e.touches[0].clientY;
-
-    const head = snake[0];
-    const headPixelX = head.x * box + box/2;
-    const headPixelY = head.y * box + box/2;
-
-    const diffX = touchX - headPixelX;
-    const diffY = touchY - headPixelY;
-
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-        direction = diffX > 0 ? "RIGHT" : "LEFT";
-    } else {
-        direction = diffY > 0 ? "DOWN" : "UP";
-    }
-}, { passive: false });
+    e.preventDefault(); // Evita scroll mientras se juega
+});
 
 // =========================
 // PANTALLA INICIO
